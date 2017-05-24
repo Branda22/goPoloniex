@@ -5,6 +5,6 @@ type Trading struct {
 	Sign string
 }
 
-func NewTradingClient() Trading {
-
-}
+//func NewTradingClient() Trading {
+//
+//}

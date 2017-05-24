@@ -22,7 +22,7 @@ func retrieveMessage(dataChannel chan []interface{}) {
 		message := <-dataChannel
 
 		if len(message) > 0 {
-			fmt.Println(message[0], message[1])
+			fmt.Println(message)
 		}
 	}
 }
