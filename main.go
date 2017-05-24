@@ -5,11 +5,26 @@ import (
 
 	"sync"
 
-	"github.com/branda22/hello/poloniex"
+	"github.com/branda22/goPoloniex/poloniex"
 )
 
 func ondataReceived(args []interface{}, kwargs map[string]interface{}) {
 	fmt.Println(args)
+}
+
+func onTrollMessage(args []interface{}, kwargs map[string]interface{}) {
+	fmt.Println(args)
+}
+
+func retrieveMessage(dataChannel chan []interface{}) {
+	fmt.Println("retrieveMessage Invoked")
+	for {
+		message := <-dataChannel
+
+		if len(message) > 0 {
+			fmt.Println(message[0], message[1])
+		}
+	}
 }
 
 func main() {
@@ -19,8 +34,19 @@ func main() {
 
 	wg.Add(1)
 
-	poloniexClient := poloniex.NewPoloniexClient()
+	pushClient := poloniex.NewPushClient()
 
-	poloniexClient.SubscribeTicker(ondataReceived)
+	//pushClient.SubscribeTicker(ondataReceived)
+	//pushClient.SubscribeOrderBookTrades("USDT_BTC", onTrollMessage)
+
+	dataChannel := make(chan []interface{})
+
+	err := pushClient.ChannelTicker(dataChannel)
+
+	if err != nil {
+		panic(err)
+	}
+
+	go retrieveMessage(dataChannel)
 	wg.Wait()
 }
