@@ -1,9 +1,10 @@
-package poloniex
+package goPoloniex
 
 import (
 	"fmt"
 
 	"gopkg.in/jcelliott/turnpike.v2"
+	"strconv"
 )
 
 const (
@@ -13,15 +14,15 @@ const (
 
 type Ticker struct {
 	Pair          string
-	Last          float32
-	LowestAsk     float32
-	HighestBid    float32
-	PercentChange float32
-	BaseVolume    float32
-	QuoteVolume   float32
-	IsFrozen      int
-	DayHigh       float32
-	DayLow        float32
+	Last          float64
+	LowestAsk     float64
+	HighestBid    float64
+	PercentChange float64
+	BaseVolume    float64
+	QuoteVolume   float64
+	IsFrozen      float64
+	DayHigh       float64
+	DayLow        float64
 }
 
 type PushClient struct {
@@ -92,19 +93,33 @@ func (c *PushClient) ChannelTicker(dataChannel chan Ticker) error {
 	return nil
 }
 
+
 func parseTicker(args []interface{}) Ticker {
+
+	pair := args[0].(string)
+	last, _ := strconv.ParseFloat(args[1].(string), 64)
+	lowestAsk, _ := strconv.ParseFloat(args[2].(string), 64)
+	highestBid, _ := strconv.ParseFloat(args[3].(string), 64)
+	percentChange, _ := strconv.ParseFloat(args[4].(string), 64)
+	baseVolume, _ := strconv.ParseFloat(args[5].(string), 64)
+	quoteVolume, _ := strconv.ParseFloat(args[6].(string), 64)
+	isFrozen :=  args[7].(float64)
+	dayHigh, _ := strconv.ParseFloat(args[8].(string), 64)
+	dayLow, _ := strconv.ParseFloat(args[9].(string), 64)
+
 	t := Ticker{
-		args[0].(string),
-		args[1].(float32),
-		args[2].(float32),
-		args[3].(float32),
-		args[4].(float32),
-		args[5].(float32),
-		args[6].(float32),
-		args[7].(int),
-		args[8].(float32),
-		args[9].(float32),
+		pair,
+		last,
+		lowestAsk,
+		highestBid,
+		percentChange,
+		baseVolume,
+		quoteVolume,
+		isFrozen,
+		dayHigh,
+		dayLow,
 	}
+
 
 	return t
 }

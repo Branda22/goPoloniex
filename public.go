@@ -1,4 +1,4 @@
-package poloniex
+package goPoloniex
 
 type PublicClient struct{}
 
