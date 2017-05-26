@@ -11,6 +11,19 @@ const (
 	REALM = "realm1"
 )
 
+type Ticker struct {
+	Pair          string
+	Last          float32
+	LowestAsk     float32
+	HighestBid    float32
+	PercentChange float32
+	BaseVolume    float32
+	QuoteVolume   float32
+	IsFrozen      int
+	DayHigh       float32
+	DayLow        float32
+}
+
 type PushClient struct {
 	WSClient *turnpike.Client
 }
@@ -67,9 +80,9 @@ func (c *PushClient) SubscribeTrollbox(callback func(args []interface{}, kwargs 
 }
 
 /* Channel API */
-func (c *PushClient) ChannelTicker(dataChannel chan []interface{}) error {
+func (c *PushClient) ChannelTicker(dataChannel chan Ticker) error {
 	err := c.WSClient.Subscribe("ticker", nil, func(args []interface{}, kwargs map[string]interface{}) {
-		dataChannel <- args
+		dataChannel <- parseTicker(args)
 	})
 
 	if err != nil {
@@ -77,4 +90,21 @@ func (c *PushClient) ChannelTicker(dataChannel chan []interface{}) error {
 	}
 
 	return nil
+}
+
+func parseTicker(args []interface{}) Ticker {
+	t := Ticker{
+		args[0].(string),
+		args[1].(float32),
+		args[2].(float32),
+		args[3].(float32),
+		args[4].(float32),
+		args[5].(float32),
+		args[6].(float32),
+		args[7].(int),
+		args[8].(float32),
+		args[9].(float32),
+	}
+
+	return t
 }

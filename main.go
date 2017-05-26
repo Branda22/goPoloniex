@@ -39,7 +39,7 @@ func main() {
 	//pushClient.SubscribeTicker(ondataReceived)
 	//pushClient.SubscribeOrderBookTrades("USDT_BTC", onTrollMessage)
 
-	dataChannel := make(chan []interface{})
+	dataChannel := make(chan poloniex.Ticker)
 
 	err := pushClient.ChannelTicker(dataChannel)
 
